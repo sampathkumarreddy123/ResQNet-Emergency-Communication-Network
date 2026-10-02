@@ -37,9 +37,9 @@ export default function CongestionControl() {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Playback & Timing: 1.0 second per leakage default
+  // Playback & Timing: 2.2 seconds per leakage for clear, slow visibility
   const [isPlaying, setIsPlaying] = useState(true);
-  const [secondsPerLeak, setSecondsPerLeak] = useState(1.0); // 1.0 second per leakage
+  const [secondsPerLeak, setSecondsPerLeak] = useState(2.2); // 2.2 seconds per leakage (slow & clear)
   const [continuousMode, setContinuousMode] = useState(true);
 
   // Synchronized visual choreography states
@@ -123,9 +123,7 @@ export default function CongestionControl() {
       setTankQueueLevel(arrivedQueue);
     }, 250);
 
-    // --- PHASE 2: Leakage (650ms to 650ms + leakDuration) ---
-    // At 650ms: Incoming packet has fully merged into the liquid.
-    // Bottom nozzle begins dripping, and liquid height drains in EXACT correspondence!
+    // --- PHASE 2: Leakage ---
     const leakTimeMs = Math.max(1, stepData.transmitted) * secondsPerLeak * 1000;
 
     const leakTimer = setTimeout(() => {
@@ -141,15 +139,14 @@ export default function CongestionControl() {
       } else {
         setCurrentPhase('settled');
       }
-    }, 650);
+    }, 700);
 
     // --- PHASE 3: Settle ---
-    // When leakage concludes: Droplet enters conduit and state settles cleanly
     const settleTimer = setTimeout(() => {
       setIsDraining(false);
       setCurrentPhase('settled');
-      setWaterTransitionDuration('300ms');
-    }, 650 + leakTimeMs);
+      setWaterTransitionDuration('400ms');
+    }, 700 + leakTimeMs);
 
     return () => {
       clearTimeout(riseTimer);
@@ -163,9 +160,9 @@ export default function CongestionControl() {
     let timeoutId;
     if (isPlaying && result?.history && result.history.length > 0) {
       const stepData = result.history[currentStep];
-      const ingressTime = stepData?.incoming > 0 ? 650 : 250;
+      const ingressTime = stepData?.incoming > 0 ? 700 : 250;
       const leakTime = Math.max(1, stepData?.transmitted || 1) * secondsPerLeak * 1000;
-      const settleTime = 450;
+      const settleTime = 800;
       const totalStepTime = ingressTime + leakTime + settleTime;
 
       timeoutId = setTimeout(() => {
@@ -431,22 +428,24 @@ export default function CongestionControl() {
                   {/* Spout / Leaking Drain Nozzle */}
                   <div className="w-4 h-2 bg-[#064E3B] rounded-b-xs" />
 
-                  {/* Outflow Droplet: Exactly 1.0 second per leakage, in direct sync with water drain */}
-                  <div className="h-9 w-full flex flex-col items-center justify-start mt-1 relative">
+                  {/* Outflow Droplet: Slower 2.2s glide for clear, high visibility */}
+                  <div className="h-10 w-full flex flex-col items-center justify-start mt-1 relative">
                     {isDraining && currentStepData?.transmitted > 0 ? (
                       <div
                         key={`leak-${currentStep}`}
                         className="flex flex-col items-center animate-packet-drip"
                         style={{ animationDuration: `${secondsPerLeak}s` }}
                       >
-                        <Droplets className="w-3.5 h-3.5 text-[#064E3B]" />
-                        <span className="text-[9px] font-bold font-mono text-[#064E3B] mt-0.5">
-                          {currentStepData.transmitted} {currentStepData.transmitted === 1 ? 'pkt' : 'pkts'}
-                        </span>
+                        <div className="flex items-center px-2.5 py-0.5 rounded-full bg-[#D9E5DC] border border-[#064E3B]/30 shadow-xs">
+                          <Droplets className="w-3.5 h-3.5 text-[#064E3B] mr-1" />
+                          <span className="text-[10px] font-bold font-mono text-[#064E3B]">
+                            -{currentStepData.transmitted} {currentStepData.transmitted === 1 ? 'pkt' : 'pkts'}
+                          </span>
+                        </div>
                       </div>
                     ) : (
                       <span className="text-[9px] font-mono text-[#747D77] italic">
-                        {currentStepData?.transmitted ? `Leaked (${currentStepData.transmitted})` : '0 pkts'}
+                        {currentStepData?.transmitted ? `Leaked (${currentStepData.transmitted} pkts)` : '0 pkts'}
                       </span>
                     )}
                   </div>
