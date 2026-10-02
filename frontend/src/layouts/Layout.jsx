@@ -178,7 +178,7 @@ export default function Layout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64 bg-[#F5F7F5]">
         {/* Top Navbar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E9E5] px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E5E9E5] px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 shadow-2xs">
           <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
             <button
               className="lg:hidden p-1.5 rounded-lg text-[#747D77] hover:text-[#064E3B] hover:bg-[#F5F7F5] shrink-0 cursor-pointer"
