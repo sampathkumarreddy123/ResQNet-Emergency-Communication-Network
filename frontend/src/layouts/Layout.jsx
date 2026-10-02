@@ -142,8 +142,16 @@ export default function Layout() {
             <span className="flex items-center">
               <Database className="w-3.5 h-3.5 mr-1 text-[#F8E7C9]" /> Database
             </span>
-            <span className="font-mono font-bold text-[10px] bg-[#F8E7C9] text-[#064E3B] px-2 py-0.5 rounded border border-[#064E3B]/20">
-              {dbStatus.connected ? 'ONLINE' : 'LOCAL'}
+            <span
+              title={
+                dbStatus.connected
+                  ? 'Connected to Cloud MongoDB database'
+                  : 'Running in resilient in-memory simulation mode (Add MONGO_URI in Render to connect MongoDB Atlas)'
+              }
+              className="font-mono font-bold text-[10px] bg-[#F8E7C9] text-[#064E3B] px-2 py-0.5 rounded border border-[#064E3B]/20 inline-flex items-center space-x-1"
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${dbStatus.connected ? 'bg-emerald-600' : 'bg-[#064E3B]'}`}></span>
+              <span>{dbStatus.connected ? 'ONLINE' : 'IN-MEMORY'}</span>
             </span>
           </div>
           <div className="flex justify-between text-[11px] text-[#D9E5DC] mt-2 pt-2 border-t border-[#064E3B]">

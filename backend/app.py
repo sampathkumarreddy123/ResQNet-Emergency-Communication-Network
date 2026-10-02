@@ -15,11 +15,13 @@ from dotenv import load_dotenv
 load_dotenv()
 load_dotenv(os.path.join(CURRENT_DIR, '.env'))
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
 from backend.routes.api import api_bp
 from backend.database.mongo import db_manager
+
+DIST_DIR = os.path.join(PARENT_DIR, 'frontend', 'dist')
 
 
 def create_app() -> Flask:
@@ -32,16 +34,25 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(api_bp)
 
-    @app.errorhandler(404)
-    def not_found(e):
-        return jsonify({"error": "Resource not found", "status_code": 404}), 404
-
     @app.errorhandler(500)
     def internal_error(e):
         return jsonify({"error": "Internal server error", "status_code": 500}), 500
 
-    @app.route("/")
-    def index():
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve(path):
+        """Serve built frontend SPA or API fallback."""
+        if path.startswith("api/"):
+            return jsonify({"error": "Resource not found", "status_code": 404}), 404
+
+        if os.path.exists(DIST_DIR):
+            target_file = os.path.join(DIST_DIR, path)
+            if path and os.path.exists(target_file):
+                return send_from_directory(DIST_DIR, path)
+            index_file = os.path.join(DIST_DIR, "index.html")
+            if os.path.exists(index_file):
+                return send_from_directory(DIST_DIR, "index.html")
+
         return jsonify({
             "name": "ResQNet — Emergency Communication Network Simulation API",
             "version": "1.0.0",
