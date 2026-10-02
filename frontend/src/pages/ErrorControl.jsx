@@ -374,12 +374,6 @@ export default function ErrorControl() {
                               </span>
                             </div>
 
-                            <div className="text-xs font-sans text-[#747D77]">
-                              {step.step === 1
-                                ? `Take the first ${step.divisorLine.length} bits:`
-                                : `Now use the next ${step.divisorLine.length} bits starting at the first 1:`}
-                            </div>
-
                             {/* Exact Long Division Alignment */}
                             <div className="p-3.5 bg-white rounded-lg border border-[#E5E9E5] text-[11px] sm:text-xs font-bold leading-relaxed tracking-widest text-[#252B28] space-y-0.5 overflow-x-auto whitespace-pre font-mono">
                               <div>{step.dividendLine}</div>
@@ -388,15 +382,12 @@ export default function ErrorControl() {
                               <div>{step.resultLine}</div>
                             </div>
 
-                            {/* Shift / Transition explanation */}
-                            <div className="text-xs font-sans space-y-1.5 pt-0.5">
-                              <p className="text-[#747D77]">{step.explanation}</p>
-                              {!step.isComplete && step.nextDividend && (
-                                <div className="font-mono font-bold text-xs bg-white p-2.5 rounded-lg border border-[#E5E9E5] text-[#064E3B]">
-                                  {step.nextDividend}
-                                </div>
-                              )}
-                            </div>
+                            {!step.isComplete && step.nextDividend && (
+                              <div className="font-mono font-bold text-xs bg-white p-2.5 rounded-lg border border-[#E5E9E5] text-[#064E3B] flex items-center justify-between">
+                                <span className="text-[11px] font-sans text-[#747D77]">Next Dividend:</span>
+                                <span>{step.nextDividend}</span>
+                              </div>
+                            )}
                           </div>
                         ))}
 

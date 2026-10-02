@@ -241,37 +241,11 @@ export default function CongestionControl() {
     }
   };
 
-  // Step Action Commentary
-  const getStepCommentary = () => {
-    if (!currentStepData) return '';
-    const { incoming, transmitted, queue_size, dropped, isContinuous } = currentStepData;
-
-    if (isContinuous) {
-      return `💧 Continuous Stream (1s / leakage): 1 packet drops in and 1 packet leaks out every ${secondsPerLeak}s (Bucket in steady state).`;
-    }
-    if (dropped > 0) {
-      return `⚠️ Buffer Overflow! Bucket exceeded capacity of ${bucketCap}. ${dropped} packets dropped due to congestion.`;
-    }
-    if (incoming > leakRate) {
-      return `⚡ Burst Arrival: ${incoming} pkts arrived (exceeds leak rate of ${leakRate}). Buffer absorbing surplus (${queue_size} pkts queued).`;
-    }
-    if (incoming > 0 && transmitted > 0) {
-      return `🔄 Flow Smoothing: ${incoming} pkts arrived while leaking at constant rate of ${transmitted} pkts/step.`;
-    }
-    if (incoming === 0 && queue_size > 0) {
-      return `💧 Buffer Draining: Zero ingress, smoothly transmitting ${transmitted} pkts/step from queue.`;
-    }
-    if (queue_size === 0 && transmitted === 0) {
-      return `✅ Buffer Idle: Queue is clear and ready for the next traffic burst.`;
-    }
-    return `Regulating message traffic: ${transmitted} pkts dispatched at constant rate.`;
-  };
-
   return (
     <div className="space-y-4">
       <PageHeader
         title="Congestion Control (Leaky Bucket)"
-        subtitle="Regulates bursty message arrivals into a constant output rate to prevent buffer overflow."
+        subtitle="Traffic shaping and buffer management simulation."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -476,46 +450,14 @@ export default function CongestionControl() {
                       </span>
                     )}
                   </div>
-
-                  <div className="flex items-center space-x-1 text-[10px] text-[#747D77] font-semibold border-t border-[#E5E9E5] pt-1.5 w-full justify-center">
-                    <Droplet className="w-3 h-3 text-[#064E3B]" />
-                    <span>Cadence: 1 pkt / {secondsPerLeak}s</span>
-                  </div>
                 </div>
 
                 {/* Scrubber & Automated Playback Controls */}
                 <div className="sm:col-span-2 space-y-3">
                   {/* Timeline Header */}
                   <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-bold text-[#252B28]">Timeline Step</span>
-                      <span
-                        className={`inline-flex items-center text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full border ${
-                          isPostSimulationContinuous
-                            ? 'bg-[#F8E7C9] text-[#064E3B] border-[#064E3B]/30'
-                            : isPlaying
-                            ? 'bg-[#064E3B] text-white border-[#064E3B]'
-                            : 'bg-white text-[#747D77] border-[#E5E9E5]'
-                        }`}
-                      >
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                            isPlaying ? 'bg-[#064E3B] animate-pulse' : 'bg-[#747D77]'
-                          }`}
-                        />
-                        {isPostSimulationContinuous
-                          ? 'Continuous 1-Pkt Stream (1s)'
-                          : isPlaying
-                          ? currentPhase === 'ingress'
-                            ? '📥 Inflow Arrival'
-                            : currentPhase === 'leaking'
-                            ? '💧 Draining at 1s/leak'
-                            : 'Synchronized Play'
-                          : 'Paused'}
-                      </span>
-                    </div>
-
-                    <span className="font-mono bg-[#F8E7C9] text-[#064E3B] border border-[#064E3B]/20 font-bold px-2 py-0.5 rounded">
+                    <span className="font-bold text-[#252B28]">Timeline Step</span>
+                    <span className="font-mono bg-[#F8E7C9] text-[#064E3B] border border-[#064E3B]/20 font-bold px-2 py-0.5 rounded text-[11px]">
                       Step {currentStep + 1} of {result.history.length}
                     </span>
                   </div>
@@ -569,14 +511,13 @@ export default function CongestionControl() {
                     />
                     <div className="flex justify-between text-[10px] font-mono text-[#747D77]">
                       <span>Start (S1)</span>
-                      <span>Current: Step {currentStep + 1}</span>
+                      <span>Step {currentStep + 1}</span>
                       <span>Latest (S{result.history.length})</span>
                     </div>
                   </div>
 
-                  {/* Playback Controls & Speed Options */}
+                  {/* Playback Controls */}
                   <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#E5E9E5]">
-                    {/* Play/Pause & Steppers */}
                     <div className="flex flex-wrap items-center gap-1.5">
                       <button
                         type="button"
@@ -626,86 +567,13 @@ export default function CongestionControl() {
                       <button
                         type="button"
                         onClick={handleReplayBurst}
-                        className="px-2 py-1.5 bg-white hover:bg-[#F5F7F5] text-[#252B28] rounded border border-[#E5E9E5] text-[11px] font-semibold flex items-center transition-colors cursor-pointer"
-                        title="Replay Initial Burst Scenario"
+                        className="px-2.5 py-1.5 bg-white hover:bg-[#F5F7F5] text-[#252B28] rounded border border-[#E5E9E5] text-[11px] font-semibold flex items-center transition-colors cursor-pointer"
+                        title="Replay Scenario"
                       >
                         <RotateCcw className="w-3 h-3 text-[#747D77] mr-1" />
                         Replay
                       </button>
                     </div>
-
-                    {/* Cadence: 1s per leak Options */}
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                      {/* Seconds Per Leak Pills */}
-                      <div className="flex items-center bg-[#F5F7F5] p-0.5 rounded border border-[#E5E9E5]">
-                        <button
-                          type="button"
-                          onClick={() => setSecondsPerLeak(1.5)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold transition-colors cursor-pointer ${
-                            secondsPerLeak === 1.5
-                              ? 'bg-[#064E3B] text-white'
-                              : 'text-[#747D77] hover:text-[#252B28]'
-                          }`}
-                          title="Extra Slow (1.5s per leakage)"
-                        >
-                          1.5s / Leak
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSecondsPerLeak(1.0)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold transition-colors cursor-pointer ${
-                            secondsPerLeak === 1.0
-                              ? 'bg-[#064E3B] text-white'
-                              : 'text-[#747D77] hover:text-[#252B28]'
-                          }`}
-                          title="Slow / Steady (1.0s per leakage - Recommended)"
-                        >
-                          1.0s / Leak
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSecondsPerLeak(0.7)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold transition-colors cursor-pointer ${
-                            secondsPerLeak === 0.7
-                              ? 'bg-[#064E3B] text-white'
-                              : 'text-[#747D77] hover:text-[#252B28]'
-                          }`}
-                          title="Brisk (0.7s per leakage)"
-                        >
-                          0.7s / Leak
-                        </button>
-                      </div>
-
-                      {/* Continuous Mode Toggle */}
-                      <button
-                        type="button"
-                        onClick={() => setContinuousMode(!continuousMode)}
-                        className={`px-2 py-1 rounded text-[10px] font-medium border flex items-center transition-colors cursor-pointer ${
-                          continuousMode
-                            ? 'bg-[#F8E7C9] text-[#064E3B] border-[#064E3B]/30'
-                            : 'bg-white text-[#747D77] border-[#E5E9E5]'
-                        }`}
-                        title="When simulation completes, keep dropping 1 packet continuously every 1s"
-                      >
-                        <Repeat className={`w-3 h-3 mr-1 ${continuousMode ? 'text-[#064E3B]' : 'text-[#747D77]'}`} />
-                        Continuous Stream: {continuousMode ? 'On' : 'Off'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Dynamic Action Commentary with Phase Indicator */}
-                  <div className="p-2.5 rounded-lg bg-[#F8E7C9]/40 border border-[#064E3B]/20 text-[11px] text-[#252B28] flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="font-semibold text-[#064E3B] mr-1.5">Action:</span>
-                      <span>{getStepCommentary()}</span>
-                    </div>
-                    <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 rounded bg-white/70 border border-[#064E3B]/20 text-[#064E3B] font-bold shrink-0 ml-2">
-                      {currentPhase === 'ingress'
-                        ? 'Phase 1: Inflow'
-                        : currentPhase === 'leaking'
-                        ? 'Phase 2: Leakage'
-                        : 'Phase 3: Settled'}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -715,9 +583,6 @@ export default function CongestionControl() {
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-bold uppercase tracking-wider text-[#252B28]">
                     Queue Dynamics Chart
-                  </span>
-                  <span className="text-[11px] text-[#747D77] font-mono">
-                    Sweeping Cursor: <strong className="text-[#064E3B]">Step {currentStep + 1}</strong>
                   </span>
                 </div>
                 <div className="h-56 w-full">
@@ -741,7 +606,6 @@ export default function CongestionControl() {
                         stroke="#064E3B"
                         strokeWidth={2}
                         strokeDasharray="3 3"
-                        label={{ value: '● Live', position: 'top', fill: '#064E3B', fontSize: 10 }}
                       />
                       <Bar dataKey="incoming" name="Incoming" fill="#D9E5DC" />
                       <Bar dataKey="queue_size" name="Queue Level" fill="#183B32" />
