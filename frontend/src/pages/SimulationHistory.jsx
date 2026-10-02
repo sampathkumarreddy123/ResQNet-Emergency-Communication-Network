@@ -113,8 +113,8 @@ export default function SimulationHistory() {
 
       {/* Storage Status & Search Bar */}
       <div className="bg-white rounded-xl border border-[#E5E9E5] p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
-        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-          <div className="relative flex-1 max-w-sm">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-0 w-full sm:w-auto">
+          <div className="relative flex-1 min-w-[160px] max-w-sm">
             <Search className="w-4 h-4 text-[#747D77] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
@@ -125,24 +125,24 @@ export default function SimulationHistory() {
             />
           </div>
 
-          <div className="flex items-center space-x-1">
+          <div className="flex flex-wrap items-center gap-1">
             {['ALL', 'NORMAL', 'CONGESTION', 'ERROR_RECOVERY'].map((sc) => (
               <button
                 key={sc}
                 onClick={() => setScenarioFilter(sc)}
-                className={`px-3 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold transition-all cursor-pointer ${
                   scenarioFilter === sc
                     ? 'bg-[#064E3B] text-white shadow-xs'
                     : 'bg-[#F5F7F5] text-[#747D77] hover:text-[#064E3B] border border-[#E5E9E5]'
                 }`}
               >
-                {sc}
+                {sc === 'ERROR_RECOVERY' ? 'RECOVERY' : sc}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 text-xs text-[#747D77] font-mono">
+        <div className="flex items-center space-x-3 text-xs text-[#747D77] font-mono shrink-0">
           <span className="flex items-center space-x-1.5">
             <Database className="w-3.5 h-3.5 text-[#064E3B]" />
             <span className="font-semibold text-[#252B28]">{dbStatus.connected ? 'MongoDB Atlas' : 'In-Memory'}</span>
@@ -225,7 +225,7 @@ export default function SimulationHistory() {
                   </div>
 
                   {selectedRun.routing?.path && (
-                    <div className="px-3 py-1 rounded-lg bg-[#F5F7F5] border border-[#E5E9E5] text-xs font-mono font-bold text-[#064E3B]">
+                    <div className="px-3 py-1 rounded-lg bg-[#F5F7F5] border border-[#E5E9E5] text-xs font-mono font-bold text-[#064E3B] max-w-full overflow-x-auto whitespace-nowrap">
                       Path: {selectedRun.routing.path.map((n) => formatNode(n)).join(' → ')}
                     </div>
                   )}
@@ -255,9 +255,9 @@ export default function SimulationHistory() {
                 {selectedRun.config?.emergency_message && (
                   <div className="p-3 bg-[#F5F7F5] rounded-lg border border-[#E5E9E5] flex items-start space-x-2.5 text-xs">
                     <ShieldAlert className="w-4 h-4 text-[#064E3B] shrink-0 mt-0.5" />
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <span className="font-semibold text-[#252B28]">Message: </span>
-                      <span className="font-mono text-[#747D77]">{selectedRun.config.emergency_message}</span>
+                      <span className="font-mono text-[#747D77] break-words">{selectedRun.config.emergency_message}</span>
                     </div>
                   </div>
                 )}
@@ -269,7 +269,7 @@ export default function SimulationHistory() {
                   Packet Logs ({packets.length})
                 </h3>
                 <div className="overflow-x-auto max-h-[240px] border border-[#E5E9E5] rounded-lg">
-                  <table className="w-full text-left text-xs font-mono">
+                  <table className="w-full min-w-[480px] text-left text-xs font-mono">
                     <thead className="bg-[#F5F7F5] border-b border-[#E5E9E5] text-[#747D77] font-sans font-semibold">
                       <tr>
                         <th className="py-2 px-3">Packet ID</th>

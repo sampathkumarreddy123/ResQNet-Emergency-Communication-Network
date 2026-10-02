@@ -168,10 +168,10 @@ export default function Routing() {
         title="Routing Protocols"
         subtitle="Compare Dijkstra Shortest Path and Bellman-Ford Distance Vector tables with link-failure recalculation."
         actions={
-          <div className="flex bg-white p-1 rounded-lg text-xs font-semibold border border-[#E5E9E5]">
+          <div className="flex flex-wrap bg-white p-1 rounded-lg text-xs font-semibold border border-[#E5E9E5] gap-1">
             <button
               onClick={() => setActiveTab('dijkstra')}
-              className={`px-3 py-1.5 rounded-md transition-all ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                 activeTab === 'dijkstra' ? 'bg-[#064E3B] text-[#F8E7C9] font-bold shadow-xs' : 'text-[#747D77] hover:text-[#064E3B]'
               }`}
             >
@@ -179,7 +179,7 @@ export default function Routing() {
             </button>
             <button
               onClick={() => setActiveTab('distance_vector')}
-              className={`px-3 py-1.5 rounded-md transition-all ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                 activeTab === 'distance_vector' ? 'bg-[#064E3B] text-[#F8E7C9] font-bold shadow-xs' : 'text-[#747D77] hover:text-[#064E3B]'
               }`}
             >
@@ -187,7 +187,7 @@ export default function Routing() {
             </button>
             <button
               onClick={() => setActiveTab('link_failure')}
-              className={`px-3 py-1.5 rounded-md transition-all ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                 activeTab === 'link_failure' ? 'bg-[#064E3B] text-[#F8E7C9] font-bold shadow-xs' : 'text-[#747D77] hover:text-[#064E3B]'
               }`}
             >
@@ -200,14 +200,14 @@ export default function Routing() {
       {/* DIJKSTRA TAB */}
       {activeTab === 'dijkstra' && (
         <div className="space-y-4">
-          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-3">
+          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <div className="flex items-center space-x-1.5">
                 <span className="font-semibold text-[#747D77]">Source:</span>
                 <select
                   value={dijkSrc}
                   onChange={(e) => setDijkSrc(e.target.value)}
-                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono"
+                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono text-xs"
                 >
                   {nodes.map((n) => (<option key={n.id} value={n.id}>{n.id}: {n.label}</option>))}
                 </select>
@@ -218,7 +218,7 @@ export default function Routing() {
                 <select
                   value={dijkDst}
                   onChange={(e) => setDijkDst(e.target.value)}
-                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono"
+                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono text-xs"
                 >
                   {nodes.map((n) => (<option key={n.id} value={n.id}>{n.id}: {n.label}</option>))}
                 </select>
@@ -228,7 +228,7 @@ export default function Routing() {
             <button
               onClick={runDijkstra}
               disabled={loading}
-              className="px-3.5 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-semibold text-xs flex items-center shadow-xs transition-colors"
+              className="px-3.5 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-semibold text-xs flex items-center shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 mr-1.5 text-[#F8E7C9] ${loading ? 'animate-spin' : ''}`} />
               Compute Shortest Path
@@ -272,14 +272,14 @@ export default function Routing() {
       {/* DISTANCE VECTOR TAB */}
       {activeTab === 'distance_vector' && (
         <div className="space-y-4">
-          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-3">
+          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               <div className="flex items-center space-x-1.5">
                 <span className="font-semibold text-[#747D77]">Router:</span>
                 <select
                   value={selectedDVNode}
                   onChange={(e) => setSelectedDVNode(e.target.value)}
-                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono"
+                  className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono text-xs"
                 >
                   {nodes.map((n) => (<option key={n.id} value={n.id}>{n.id}: {n.label}</option>))}
                 </select>
@@ -296,14 +296,14 @@ export default function Routing() {
               </label>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <span className="text-[#064E3B] font-bold bg-[#F8E7C9] px-2.5 py-1 rounded border border-[#064E3B]/20">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[#064E3B] font-bold bg-[#F8E7C9] px-2.5 py-1 rounded border border-[#064E3B]/20 text-[11px] sm:text-xs">
                 {dvResult ? `Converged in ${dvResult.iterations_count} rounds` : 'Calculating...'}
               </span>
               <button
                 onClick={runDistanceVector}
                 disabled={loading}
-                className="px-3.5 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-semibold text-xs flex items-center shadow-xs transition-colors"
+                className="px-3 sm:px-3.5 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-semibold text-xs flex items-center shadow-xs transition-colors cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-1.5 text-[#F8E7C9] ${loading ? 'animate-spin' : ''}`} />
                 Recalculate

@@ -108,16 +108,16 @@ export default function Analytics() {
       {selectedSim ? (
         <div className="space-y-4">
           {/* Selector Bar */}
-          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold text-[#747D77]">Run:</span>
+          <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+            <div className="flex items-center space-x-2 min-w-0">
+              <span className="font-semibold text-[#747D77] shrink-0">Run:</span>
               <select
                 value={selectedSim.simulation_id}
                 onChange={(e) => {
                   const s = history.find((x) => x.simulation_id === e.target.value);
                   if (s) loadSimulationDetails(s);
                 }}
-                className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono"
+                className="border border-[#E5E9E5] rounded p-1.5 bg-[#F5F7F5] text-[#252B28] font-mono text-xs w-full sm:max-w-xs focus:border-[#064E3B] focus:outline-hidden truncate"
               >
                 {history.map((sim) => (
                   <option key={sim.simulation_id} value={sim.simulation_id}>
@@ -127,8 +127,10 @@ export default function Analytics() {
               </select>
             </div>
 
-            <div className="font-mono text-xs text-[#747D77]">
-              Packets: <strong className="text-[#064E3B]">{perf.sent_original_packets || 0}</strong> &bull; Retries: <strong className="text-[#064E3B]">{perf.total_retransmissions || 0}</strong> &bull; PDR: <strong className="text-[#064E3B]">{perf.packet_delivery_ratio_pct}%</strong>
+            <div className="font-mono text-[11px] sm:text-xs text-[#747D77] flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span>Packets: <strong className="text-[#064E3B]">{perf.sent_original_packets || 0}</strong></span>
+              <span>&bull; Retries: <strong className="text-[#064E3B]">{perf.total_retransmissions || 0}</strong></span>
+              <span>&bull; PDR: <strong className="text-[#064E3B]">{perf.packet_delivery_ratio_pct}%</strong></span>
             </div>
           </div>
 

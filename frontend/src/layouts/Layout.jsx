@@ -86,7 +86,7 @@ export default function Layout() {
 
       {/* Sidebar Navigation - Forest Green #064E3B */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#064E3B] border-r border-[#183B32] flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 text-white ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 sm:w-72 bg-[#064E3B] border-r border-[#183B32] flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 text-white ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -164,45 +164,47 @@ export default function Layout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64 bg-[#F5F7F5]">
         {/* Top Navbar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E9E5] px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E9E5] px-3.5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
             <button
-              className="lg:hidden p-1.5 rounded-lg text-[#747D77] hover:text-[#064E3B]"
+              className="lg:hidden p-1.5 rounded-lg text-[#747D77] hover:text-[#064E3B] hover:bg-[#F5F7F5] shrink-0"
               onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open Navigation Menu"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#252B28] flex items-center gap-1.5">
+            <div className="flex items-center gap-2 min-w-0 truncate">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#252B28] flex items-center gap-1.5 shrink-0">
                 <span className="w-2 h-2 rounded-full bg-[#064E3B]"></span>
                 ResQNet
               </span>
               <span className="hidden md:inline-block text-[#B8C7BD] text-xs">•</span>
-              <span className="hidden md:inline-block text-[11px] text-[#747D77] font-medium">
+              <span className="hidden md:inline-block text-[11px] text-[#747D77] font-medium truncate">
                 Emergency Communication Network Simulation
               </span>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 shrink-0">
             <button
               onClick={handleResetTopology}
               disabled={isResetting}
-              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold text-[#252B28] bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] transition-colors"
+              className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-[#252B28] bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] transition-colors shadow-2xs"
             >
-              <RotateCcw className={`w-3.5 h-3.5 mr-1.5 ${isResetting ? 'animate-spin' : ''}`} />
-              Reset Topology
+              <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''} sm:mr-1.5`} />
+              <span className="hidden sm:inline">Reset Topology</span>
+              <span className="sm:hidden text-[11px] ml-1">Reset</span>
             </button>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-5 md:p-6 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-5 md:p-6 max-w-7xl w-full mx-auto min-w-0">
           <Outlet />
         </main>
 
         {/* Minimal Footer */}
-        <footer className="border-t border-[#E5E9E5] bg-white px-6 py-3 text-center text-xs text-[#747D77]">
+        <footer className="border-t border-[#E5E9E5] bg-white px-4 sm:px-6 py-3 text-center text-[11px] sm:text-xs text-[#747D77]">
           <span className="font-semibold text-[#064E3B]">ResQNet</span> — Emergency Communication Network Simulation
           <span className="hidden md:inline text-[11px] text-[#747D77]"> &bull; Reliable Routing. Resilient Communication. Real-Time Simulation.</span>
         </footer>

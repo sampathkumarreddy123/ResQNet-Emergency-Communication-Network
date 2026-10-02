@@ -384,7 +384,7 @@ export default function CongestionControl() {
               </div>
 
               {/* Bucket Display & Automated Animation Console */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white p-4 rounded-lg border border-[#E5E9E5] items-start shadow-xs">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-3.5 sm:p-4 rounded-lg border border-[#E5E9E5] items-start shadow-xs">
                 {/* Bucket Tank with Smooth Synchronized Choreography */}
                 <div className="flex flex-col items-center justify-center p-3 bg-[#F5F7F5] rounded-lg border border-[#E5E9E5]">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#064E3B] mb-2 flex items-center">
@@ -575,9 +575,9 @@ export default function CongestionControl() {
                   </div>
 
                   {/* Playback Controls & Speed Options */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#E5E9E5]">
+                  <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#E5E9E5]">
                     {/* Play/Pause & Steppers */}
-                    <div className="flex items-center space-x-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <button
                         type="button"
                         onClick={() => setIsPlaying(!isPlaying)}
@@ -630,12 +630,12 @@ export default function CongestionControl() {
                         title="Replay Initial Burst Scenario"
                       >
                         <RotateCcw className="w-3 h-3 text-[#747D77] mr-1" />
-                        Replay Burst
+                        Replay
                       </button>
                     </div>
 
                     {/* Cadence: 1s per leak Options */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                       {/* Seconds Per Leak Pills */}
                       <div className="flex items-center bg-[#F5F7F5] p-0.5 rounded border border-[#E5E9E5]">
                         <button

@@ -104,11 +104,11 @@ export default function Dashboard() {
         title="ResQNet Operations Dashboard"
         subtitle="Reliable Routing. Resilient Communication. Real-Time Simulation."
         actions={
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => runScenario('normal')}
               disabled={runningScenario !== null}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
                 runningScenario === 'normal'
                   ? 'bg-[#F8E7C9] text-[#064E3B] border-[#064E3B]'
                   : 'bg-white hover:bg-[#F5F7F5] border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28]'
@@ -119,7 +119,7 @@ export default function Dashboard() {
             <button
               onClick={() => runScenario('congestion')}
               disabled={runningScenario !== null}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
                 runningScenario === 'congestion'
                   ? 'bg-[#F8E7C9] text-[#064E3B] border-[#064E3B]'
                   : 'bg-white hover:bg-[#F5F7F5] border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28]'
@@ -130,7 +130,7 @@ export default function Dashboard() {
             <button
               onClick={() => runScenario('error_recovery')}
               disabled={runningScenario !== null}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors border ${
                 runningScenario === 'error_recovery'
                   ? 'bg-[#F8E7C9] text-[#064E3B] border-[#064E3B]'
                   : 'bg-white hover:bg-[#F5F7F5] border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28]'
@@ -145,21 +145,21 @@ export default function Dashboard() {
       {/* ResQNet Welcome & Identity Section */}
       <div className="bg-white border border-[#E5E9E5] rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-extrabold text-base tracking-wide text-[#064E3B]">ResQNet</span>
             <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-[#F8E7C9] text-[#064E3B] border border-[#064E3B]/20">
               Emergency Communication Network Simulation
             </span>
           </div>
-          <p className="text-xs text-[#747D77] font-medium">
+          <p className="text-xs text-[#747D77] font-medium leading-relaxed">
             Reliable Routing. Resilient Communication. Real-Time Simulation.
           </p>
         </div>
-        <div className="flex items-center gap-4 text-xs font-mono text-[#252B28] bg-[#F5F7F5] px-3 py-2 rounded-lg border border-[#E5E9E5] self-start md:self-auto">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-mono text-[#252B28] bg-[#F5F7F5] px-3 py-2 rounded-lg border border-[#E5E9E5] w-full md:w-auto">
           <div>
             <span className="text-[#747D77]">Topology:</span> <strong className="text-[#064E3B]">{topology.total_nodes || 7} Nodes</strong>
           </div>
-          <span className="text-[#B8C7BD]">|</span>
+          <span className="hidden sm:inline text-[#B8C7BD]">|</span>
           <div>
             <span className="text-[#747D77]">Channel Status:</span> <strong className="text-[#064E3B]">{topology.active_links || 10} Active Links</strong>
           </div>
@@ -167,7 +167,7 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
         <MetricCard title="Nodes" value={topology.total_nodes || 7} icon={Network} />
         <MetricCard title="Active Links" value={topology.active_links || 10} icon={Activity} />
         <MetricCard title="Failed Links" value={topology.failed_links || 0} icon={XCircle} />
@@ -177,7 +177,7 @@ export default function Dashboard() {
       </div>
 
       {/* Secondary Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         <MetricCard title="Throughput" value={perf.throughput_kbps ?? 0} unit="kbps" icon={TrendingUp} />
         <MetricCard title="Average Delay" value={perf.avg_end_to_end_delay_ms ?? 0} unit="ms" icon={Clock} />
         <MetricCard title="Retransmissions" value={perf.total_retransmissions || 0} icon={RefreshCw} />
@@ -187,13 +187,13 @@ export default function Dashboard() {
       {/* Main Grid: Active Simulation & Events */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Active Simulation Summary (2 Cols) */}
-        <div className="lg:col-span-2 bg-white rounded-lg border border-[#E5E9E5] p-4 space-y-3">
-          <div className="flex items-center justify-between pb-2.5 border-b border-[#E5E9E5]">
+        <div className="lg:col-span-2 bg-white rounded-lg border border-[#E5E9E5] p-3.5 sm:p-4 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2.5 border-b border-[#E5E9E5] gap-2">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#252B28]">
               Current Run Status
             </h2>
             {latestSim?.routing?.path && (
-              <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#F8E7C9] px-2 py-0.5 rounded border border-[#064E3B]/20">
+              <span className="font-mono text-[11px] sm:text-xs font-bold text-[#064E3B] bg-[#F8E7C9] px-2 py-0.5 rounded border border-[#064E3B]/20 break-words">
                 Path: {latestSim.routing.path.map((n) => formatNode(n)).join(' → ')}
               </span>
             )}
@@ -201,9 +201,9 @@ export default function Dashboard() {
 
           {latestSim ? (
             <div className="space-y-3 text-xs">
-              <div className="p-2.5 rounded-lg bg-[#F5F7F5] border border-[#E5E9E5] flex justify-between">
+              <div className="p-2.5 rounded-lg bg-[#F5F7F5] border border-[#E5E9E5] flex flex-col sm:flex-row justify-between gap-1.5">
                 <span>Scenario: <strong className="uppercase text-[#064E3B]">{latestSim.scenario}</strong></span>
-                <span>Message: <span className="font-mono text-[#747D77]">{latestSim.config?.emergency_message}</span></span>
+                <span className="truncate">Message: <span className="font-mono text-[#747D77]">{latestSim.config?.emergency_message}</span></span>
               </div>
 
               {/* Packets Table */}

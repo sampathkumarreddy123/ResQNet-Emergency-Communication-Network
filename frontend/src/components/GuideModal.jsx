@@ -19,44 +19,44 @@ export default function GuideModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-2.5 sm:p-4 md:p-6 animate-in fade-in duration-200">
       <div 
-        className="relative bg-white rounded-2xl shadow-xl max-w-4xl w-full border border-[#E5E9E5] overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative bg-white rounded-2xl shadow-xl max-w-4xl w-full border border-[#E5E9E5] overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="bg-[#064E3B] text-white p-6 relative border-b border-[#183B32]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-[#183B32] border border-[#F8E7C9]/30 flex items-center justify-center shadow-inner">
-                <Radio className="w-5 h-5 text-[#F8E7C9]" />
+        <div className="bg-[#064E3B] text-white p-4 sm:p-6 relative border-b border-[#183B32]">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-start sm:items-center space-x-3 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#183B32] border border-[#F8E7C9]/30 flex items-center justify-center shadow-inner shrink-0 mt-0.5 sm:mt-0">
+                <Radio className="w-4 h-4 sm:w-5 sm:h-5 text-[#F8E7C9]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center space-x-2">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F8E7C9] text-[#064E3B]">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-[#F8E7C9] text-[#064E3B]">
                     System Guide & Concept Explainer
                   </span>
                 </div>
-                <h2 className="text-xl font-bold tracking-tight text-white mt-1">
+                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white mt-1">
                   How ResQNet Operates
                 </h2>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-sm text-[#F5F7F5]/90 mt-2 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#F5F7F5]/90 mt-2 max-w-2xl leading-relaxed">
             In natural disasters (earthquakes, cyclones, floods), conventional cellular towers and fiber optics fail. 
             ResQNet demonstrates how an ad-hoc emergency mesh network safely delivers critical SOS distress alerts.
           </p>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6">
           {/* Quick Real-World Scenario Banner */}
           <div className="bg-[#F5F7F5] border border-[#E5E9E5] rounded-xl p-4 flex items-start space-x-3.5">
             <ShieldAlert className="w-6 h-6 text-[#064E3B] shrink-0 mt-0.5" />
@@ -189,13 +189,13 @@ export default function GuideModal({ isOpen, onClose }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="bg-[#F5F7F5] border-t border-[#E5E9E5] px-6 py-4 flex items-center justify-between">
-          <div className="text-xs text-[#747D77] font-medium">
+        <div className="bg-[#F5F7F5] border-t border-[#E5E9E5] px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-[11px] sm:text-xs text-[#747D77] font-medium text-center sm:text-left">
             ResQNet — Emergency Communication Network Simulation
           </div>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-xs font-bold bg-[#064E3B] hover:bg-[#183B32] text-white transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
+            className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-xl text-xs font-bold bg-[#064E3B] hover:bg-[#183B32] text-white transition-all shadow-xs flex items-center justify-center space-x-1.5 cursor-pointer"
           >
             <span>Got It, Let's Explore!</span>
             <ArrowRight className="w-3.5 h-3.5 ml-1 text-[#F8E7C9]" />

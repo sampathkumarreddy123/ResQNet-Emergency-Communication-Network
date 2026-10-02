@@ -381,10 +381,10 @@ export default function ErrorControl() {
                             </div>
 
                             {/* Exact Long Division Alignment */}
-                            <div className="p-3.5 bg-white rounded-lg border border-[#E5E9E5] text-xs font-bold leading-relaxed tracking-widest text-[#252B28] space-y-0.5">
+                            <div className="p-3.5 bg-white rounded-lg border border-[#E5E9E5] text-[11px] sm:text-xs font-bold leading-relaxed tracking-widest text-[#252B28] space-y-0.5 overflow-x-auto whitespace-pre font-mono">
                               <div>{step.dividendLine}</div>
                               <div className="text-[#747D77]">{step.divisorLine}</div>
-                              <div className="text-[#747D77] border-b border-[#E5E9E5] inline-block w-full">{step.dividerLine}</div>
+                              <div className="text-[#747D77] border-b border-[#E5E9E5] inline-block min-w-full">{step.dividerLine}</div>
                               <div>{step.resultLine}</div>
                             </div>
 
@@ -571,23 +571,23 @@ export default function ErrorControl() {
                   </div>
 
                   {/* Scrubber */}
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center space-x-1.5">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
+                    <div className="flex items-center space-x-2">
                       <button
                         onClick={() => setCurrentStepIndex((p) => Math.max(0, p - 1))}
                         disabled={currentStepIndex <= 0}
-                        className="p-1 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
+                        className="p-1.5 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
                       >
                         <ChevronLeft className="w-3.5 h-3.5 text-[#252B28]" />
                       </button>
                       <button
                         onClick={() => setCurrentStepIndex((p) => Math.min(arqResult.events.length - 1, p + 1))}
                         disabled={currentStepIndex >= arqResult.events.length - 1}
-                        className="p-1 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
+                        className="p-1.5 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
                       >
                         <ChevronRight className="w-3.5 h-3.5 text-[#252B28]" />
                       </button>
-                      <span className="text-xs text-[#747D77]">Scrubber</span>
+                      <span className="text-xs text-[#747D77] font-medium">Scrubber</span>
                     </div>
 
                     <input
@@ -596,7 +596,7 @@ export default function ErrorControl() {
                       max={arqResult.events.length - 1}
                       value={currentStepIndex}
                       onChange={(e) => setCurrentStepIndex(parseInt(e.target.value))}
-                      className="w-48 accent-[#064E3B]"
+                      className="w-full sm:w-48 accent-[#064E3B] cursor-pointer"
                     />
                   </div>
 

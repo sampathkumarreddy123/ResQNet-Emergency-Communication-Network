@@ -497,14 +497,14 @@ export default function Topology() {
       />
 
       {/* Top Selector Bar */}
-      <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center space-x-3">
+      <div className="bg-white rounded-lg border border-[#E5E9E5] p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           <div className="flex items-center space-x-1.5">
             <span className="font-semibold text-[#747D77]">Source:</span>
             <select
               value={sourceNode}
               onChange={(e) => setSourceNode(e.target.value)}
-              className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono font-semibold"
+              className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono font-semibold text-xs"
             >
               {rawTopology.nodes.map((n) => (
                 <option key={n.id} value={n.id}>{n.id}: {n.label}</option>
@@ -517,7 +517,7 @@ export default function Topology() {
             <select
               value={destNode}
               onChange={(e) => setDestNode(e.target.value)}
-              className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono font-semibold"
+              className="border border-[#E5E9E5] rounded p-1 bg-[#F5F7F5] text-[#252B28] font-mono font-semibold text-xs"
             >
               {rawTopology.nodes.map((n) => (
                 <option key={n.id} value={n.id}>{n.id}: {n.label}</option>
@@ -527,7 +527,7 @@ export default function Topology() {
         </div>
 
         {highlightedPath.length > 0 && (
-          <div className="text-xs font-semibold text-[#252B28] bg-[#F8E7C9] px-3 py-1 rounded border border-[#064E3B]/20">
+          <div className="text-[11px] sm:text-xs font-semibold text-[#252B28] bg-[#F8E7C9] px-2.5 py-1 rounded border border-[#064E3B]/20 break-words">
             Path: {highlightedPath.map((n) => formatNode(n, rawTopology.nodes)).join(' → ')} <strong className="text-[#064E3B]">(Cost: {routeCost})</strong>
           </div>
         )}
@@ -536,7 +536,7 @@ export default function Topology() {
       {/* Main Graph & Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         {/* Canvas (3 Cols) */}
-        <div className="lg:col-span-3 bg-white rounded-lg border border-[#E5E9E5] overflow-hidden h-[540px]">
+        <div className="lg:col-span-3 bg-white rounded-lg border border-[#E5E9E5] overflow-hidden h-[380px] sm:h-[460px] lg:h-[560px]">
           <ReactFlow
             nodes={nodes}
             edges={edges}

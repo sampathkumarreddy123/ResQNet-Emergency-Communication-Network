@@ -117,12 +117,12 @@ export default function Simulation() {
         title="Packet Simulation"
         subtitle="End-to-end discrete-event transmission with Leaky Bucket and Go-Back-N ARQ."
         actions={
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center flex-wrap gap-1.5">
             {playbackState === 'IDLE' && (
               <button
                 onClick={handleStartSimulation}
                 disabled={loading}
-                className="px-3 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white text-xs font-semibold flex items-center transition-colors shadow-xs"
+                className="px-3 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white text-xs font-semibold flex items-center transition-colors shadow-xs cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 mr-1 text-[#F8E7C9]" />
                 {loading ? 'Starting...' : 'Start'}
@@ -132,7 +132,7 @@ export default function Simulation() {
             {playbackState === 'RUNNING' && (
               <button
                 onClick={() => setPlaybackState('PAUSED')}
-                className="px-3 py-1.5 rounded-lg bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28] text-xs font-semibold flex items-center transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28] text-xs font-semibold flex items-center transition-colors cursor-pointer"
               >
                 <Pause className="w-3.5 h-3.5 mr-1 text-[#747D77]" /> Pause
               </button>
@@ -141,7 +141,7 @@ export default function Simulation() {
             {playbackState === 'PAUSED' && (
               <button
                 onClick={() => setPlaybackState('RUNNING')}
-                className="px-3 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white text-xs font-semibold flex items-center transition-colors shadow-xs"
+                className="px-3 py-1.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white text-xs font-semibold flex items-center transition-colors shadow-xs cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 mr-1 text-[#F8E7C9]" /> Resume
               </button>
@@ -149,7 +149,7 @@ export default function Simulation() {
 
             <button
               onClick={handleResetSimulation}
-              className="px-3 py-1.5 rounded-lg bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28] text-xs font-semibold flex items-center transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-white hover:bg-[#F5F7F5] border border-[#E5E9E5] hover:border-[#B8C7BD] text-[#252B28] text-xs font-semibold flex items-center transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5 mr-1 text-[#747D77]" /> Reset
             </button>
@@ -321,7 +321,7 @@ export default function Simulation() {
                 </div>
 
                 <div className="overflow-x-auto max-h-[220px]">
-                  <table className="w-full text-left font-mono text-[11px]">
+                  <table className="w-full min-w-[320px] text-left font-mono text-[11px]">
                     <thead className="bg-[#F5F7F5] border-b border-[#E5E9E5] text-[#747D77]">
                       <tr>
                         <th className="py-1.5 px-2">ID</th>
