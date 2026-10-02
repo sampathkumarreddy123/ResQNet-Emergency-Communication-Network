@@ -8,6 +8,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import GoBackNSimulator from '../components/GoBackNSimulator';
+import { simulateGoBackN } from '../utils/goBackNSimulator';
 import api from '../services/api';
 
 const CRC_PRESETS = [
@@ -114,9 +116,16 @@ export default function ErrorControl() {
   const [timeout, setTimeoutDuration] = useState(3.0);
   const [frameLoss, setFrameLoss] = useState(0.1);
   const [ackLoss, setAckLoss] = useState(0.05);
-  const [arqResult, setArqResult] = useState(null);
+  const [arqResult, setArqResult] = useState(() =>
+    simulateGoBackN({
+      total_frames: 10,
+      window_size: 4,
+      timeout_duration: 3.0,
+      frame_loss_prob: 0.1,
+      ack_loss_prob: 0.05,
+    })
+  );
   const [arqLoading, setArqLoading] = useState(false);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -137,7 +146,7 @@ export default function ErrorControl() {
       });
       setCrcVerifyResult(ver.data);
     } catch (err) {
-      alert('CRC error: ' + (err.response?.data?.error || err.message));
+      console.warn('CRC API unavailable:', err);
     } finally {
       setCrcLoading(false);
     }
@@ -157,9 +166,17 @@ export default function ErrorControl() {
         random_seed: Math.floor(Math.random() * 10000),
       });
       setArqResult(res.data);
-      setCurrentStepIndex(res.data.events.length - 1);
     } catch (err) {
-      alert('ARQ error: ' + (err.response?.data?.error || err.message));
+      console.warn('Backend unavailable, using client-side Go-Back-N simulation engine:', err);
+      const localResult = simulateGoBackN({
+        total_frames: parseInt(totalFrames),
+        window_size: parseInt(windowSize),
+        timeout_duration: parseFloat(timeout),
+        frame_loss_prob: parseFloat(frameLoss),
+        ack_loss_prob: parseFloat(ackLoss),
+        corruption_prob: 0.05,
+      });
+      setArqResult(localResult);
     } finally {
       setArqLoading(false);
     }
@@ -169,8 +186,6 @@ export default function ErrorControl() {
     handleComputeCRC();
     handleRunARQ();
   }, []);
-
-  const currentArqEvent = arqResult?.events ? arqResult.events[currentStepIndex] : null;
 
   return (
     <div className="space-y-4">
@@ -420,186 +435,107 @@ export default function ErrorControl() {
 
       {/* ARQ TAB */}
       {activeTab === 'arq' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg border border-[#E5E9E5] p-4 text-xs space-y-3 shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Left Column: Sliding Window Config Parameters */}
+          <div className="lg:col-span-4 bg-white rounded-xl border border-[#E5E9E5] p-4 text-xs space-y-3.5 shadow-xs">
             <span className="font-bold uppercase tracking-wider text-[#252B28] block pb-2 border-b border-[#E5E9E5]">
-              ARQ Parameters
+              ARQ Protocol Parameters
             </span>
 
             <form onSubmit={handleRunARQ} className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Total Frames</label>
+                  <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Total Frames (M)</label>
                   <input
                     type="number"
                     min="3"
                     max="20"
                     value={totalFrames}
                     onChange={(e) => setTotalFrames(e.target.value)}
-                    className="w-full border border-[#E5E9E5] rounded p-1.5 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
+                    className="w-full border border-[#E5E9E5] rounded-lg p-2 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Window (N)</label>
+                  <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Window Size (N)</label>
                   <input
                     type="number"
                     min="1"
                     max="8"
                     value={windowSize}
                     onChange={(e) => setWindowSize(e.target.value)}
-                    className="w-full border border-[#E5E9E5] rounded p-1.5 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
+                    className="w-full border border-[#E5E9E5] rounded-lg p-2 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Timeout (s)</label>
+                <label className="text-[10px] text-[#747D77] font-semibold uppercase block mb-1">Timeout (Seconds)</label>
                 <input
                   type="number"
                   step="0.5"
+                  min="1.0"
+                  max="10.0"
                   value={timeout}
                   onChange={(e) => setTimeoutDuration(e.target.value)}
-                  className="w-full border border-[#E5E9E5] rounded p-1.5 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
+                  className="w-full border border-[#E5E9E5] rounded-lg p-2 font-mono bg-[#F5F7F5] text-[#252B28] focus:border-[#064E3B] focus:outline-hidden"
                   required
                 />
               </div>
 
-              <div>
-                <div className="flex justify-between text-[10px] text-[#747D77] font-semibold uppercase">
-                  <span>Frame Loss:</span>
-                  <span className="font-mono text-[#064E3B]">{Math.round(frameLoss * 100)}%</span>
+              <div className="space-y-2 pt-1 border-t border-[#E5E9E5]">
+                <div>
+                  <div className="flex justify-between text-[10px] text-[#747D77] font-semibold uppercase">
+                    <span>Frame Loss:</span>
+                    <span className="font-mono text-[#064E3B] font-bold">{Math.round(frameLoss * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.5"
+                    step="0.05"
+                    value={frameLoss}
+                    onChange={(e) => setFrameLoss(parseFloat(e.target.value))}
+                    className="w-full mt-1 accent-[#064E3B]"
+                  />
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="0.5"
-                  step="0.05"
-                  value={frameLoss}
-                  onChange={(e) => setFrameLoss(parseFloat(e.target.value))}
-                  className="w-full mt-1 accent-[#064E3B]"
-                />
+
+                <div>
+                  <div className="flex justify-between text-[10px] text-[#747D77] font-semibold uppercase">
+                    <span>ACK Loss:</span>
+                    <span className="font-mono text-[#064E3B] font-bold">{Math.round(ackLoss * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="0.4"
+                    step="0.05"
+                    value={ackLoss}
+                    onChange={(e) => setAckLoss(parseFloat(e.target.value))}
+                    className="w-full mt-1 accent-[#064E3B]"
+                  />
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={arqLoading}
-                className="w-full py-2 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-semibold text-xs flex items-center justify-center mt-2 shadow-xs transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-lg bg-[#064E3B] hover:bg-[#183B32] text-white font-bold text-xs flex items-center justify-center mt-2 shadow-xs transition-colors cursor-pointer"
               >
-                <Play className="w-3.5 h-3.5 mr-1 text-[#F8E7C9]" />
-                {arqLoading ? 'Simulating...' : 'Run Go-Back-N'}
+                <Play className={`w-3.5 h-3.5 mr-1.5 text-[#F8E7C9] ${arqLoading ? 'animate-spin' : ''}`} />
+                {arqLoading ? 'Simulating Go-Back-N...' : 'Run Simulation'}
               </button>
             </form>
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
-            {arqResult && (
-              <div className="space-y-4 text-xs">
-                {/* Summary Row */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-white p-3 rounded-lg border border-[#E5E9E5] shadow-xs">
-                  <div>
-                    <span className="text-[#747D77] text-[10px] uppercase font-semibold">Sent</span>
-                    <div className="font-bold text-base font-mono text-[#064E3B]">{arqResult.stats.original_transmissions}</div>
-                  </div>
-                  <div>
-                    <span className="text-[#747D77] text-[10px] uppercase font-semibold">Retries</span>
-                    <div className="font-bold text-base font-mono text-[#064E3B]">{arqResult.stats.retransmissions}</div>
-                  </div>
-                  <div>
-                    <span className="text-[#747D77] text-[10px] uppercase font-semibold">Lost Frames</span>
-                    <div className="font-bold text-base font-mono text-[#064E3B]">{arqResult.stats.lost_frames}</div>
-                  </div>
-                  <div>
-                    <span className="text-[#747D77] text-[10px] uppercase font-semibold">Delivery Ratio</span>
-                    <div className="font-bold text-base font-mono text-[#064E3B]">{arqResult.stats.packet_delivery_ratio}%</div>
-                  </div>
-                </div>
-
-                {/* Sliding Window Visualization */}
-                <div className="bg-white rounded-lg border border-[#E5E9E5] p-4 space-y-3 shadow-xs">
-                  <div className="flex justify-between items-center pb-2 border-b border-[#E5E9E5]">
-                    <span className="font-bold uppercase tracking-wider text-[#252B28]">
-                      Sliding Window (N = {windowSize})
-                    </span>
-                    {currentArqEvent && (
-                      <span className="font-mono text-[11px] text-[#747D77]">
-                        Step {currentStepIndex + 1} / {arqResult.events.length} &bull; {currentArqEvent.time}s
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 p-3 bg-[#F5F7F5] rounded border border-[#E5E9E5]">
-                    {Array.from({ length: totalFrames }).map((_, i) => {
-                      const statusObj = arqResult.frame_status[i] || {};
-                      const isDelivered = statusObj.status === 'delivered';
-                      const inCurrentWindow =
-                        currentArqEvent &&
-                        i >= currentArqEvent.sender_window[0] &&
-                        i <= currentArqEvent.sender_window[1];
-
-                      return (
-                        <div
-                          key={i}
-                          className={`w-12 h-14 rounded border flex flex-col items-center justify-between p-1 font-mono text-[10px] transition-colors ${
-                            isDelivered
-                              ? 'bg-[#D9E5DC] border-[#064E3B] text-[#064E3B] font-bold'
-                              : inCurrentWindow
-                              ? 'bg-[#F8E7C9] border-[#064E3B] border-dashed text-[#064E3B] font-bold'
-                              : 'bg-white border-[#E5E9E5] text-[#747D77]'
-                          }`}
-                        >
-                          <span>F{i}</span>
-                          <span className="text-[9px] uppercase font-bold">
-                            {isDelivered ? 'ACK' : inCurrentWindow ? 'WIN' : 'PEND'}
-                          </span>
-                          <span className="text-[9px] text-[#747D77]">
-                            {statusObj.retransmissions > 0 ? `r=${statusObj.retransmissions}` : '—'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Scrubber */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setCurrentStepIndex((p) => Math.max(0, p - 1))}
-                        disabled={currentStepIndex <= 0}
-                        className="p-1.5 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
-                      >
-                        <ChevronLeft className="w-3.5 h-3.5 text-[#252B28]" />
-                      </button>
-                      <button
-                        onClick={() => setCurrentStepIndex((p) => Math.min(arqResult.events.length - 1, p + 1))}
-                        disabled={currentStepIndex >= arqResult.events.length - 1}
-                        className="p-1.5 rounded border border-[#E5E9E5] bg-white hover:bg-[#F5F7F5] disabled:opacity-30 cursor-pointer"
-                      >
-                        <ChevronRight className="w-3.5 h-3.5 text-[#252B28]" />
-                      </button>
-                      <span className="text-xs text-[#747D77] font-medium">Scrubber</span>
-                    </div>
-
-                    <input
-                      type="range"
-                      min="0"
-                      max={arqResult.events.length - 1}
-                      value={currentStepIndex}
-                      onChange={(e) => setCurrentStepIndex(parseInt(e.target.value))}
-                      className="w-full sm:w-48 accent-[#064E3B] cursor-pointer"
-                    />
-                  </div>
-
-                  {currentArqEvent && (
-                    <div className="p-2.5 rounded bg-[#F5F7F5] border border-[#E5E9E5] text-xs">
-                      <span className="font-mono font-bold text-[#064E3B]">{currentArqEvent.type} (Frame {currentArqEvent.frame_seq}): </span>
-                      <span className="text-[#252B28]">{currentArqEvent.description}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+          {/* Right Column: Go-Back-N Visualizer Stage */}
+          <div className="lg:col-span-8">
+            <GoBackNSimulator
+              simResult={arqResult}
+              onReRun={handleRunARQ}
+              isRunningNew={arqLoading}
+            />
           </div>
         </div>
       )}
