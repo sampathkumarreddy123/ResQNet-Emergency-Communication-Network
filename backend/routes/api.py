@@ -24,7 +24,7 @@ from backend.algorithms.go_back_n import simulate_go_back_n
 from backend.algorithms.leaky_bucket import simulate_leaky_bucket
 from backend.database.mongo import db_manager
 
-api_bp = Blueprint("api", __name__, url_prefix="/api")
+api_bp = Blueprint("api", __name__)
 
 # Singleton network topology and simulator instances
 topology = NetworkTopology()
